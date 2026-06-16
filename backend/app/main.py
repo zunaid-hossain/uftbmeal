@@ -18,6 +18,20 @@ from .utils.cycles import rotate_expired_cycle
 scheduler = BackgroundScheduler(timezone="Asia/Dhaka")
 
 
+def cors_origins() -> list[str]:
+    defaults = {
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://uftbmeal.netlify.app",
+    }
+    configured = {
+        origin.strip().rstrip("/")
+        for origin in os.getenv("CORS_ORIGINS", "").split(",")
+        if origin.strip()
+    }
+    return sorted(defaults | configured)
+
+
 def scheduled_cleanup():
     with SessionLocal() as db:
         cleanup_weekly_data(db)
@@ -48,7 +62,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[origin.strip().rstrip("/") for origin in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",") if origin.strip()],
+    allow_origins=cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
