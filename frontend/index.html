@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071b26" />
+    <meta name="description" content="Buy and sell hostel lunch and dinner meals at UFTB." />
+    <title>UFTB Boys Hostel Meal Exchange</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      function showStartupError(message) {
+        const root = document.getElementById("root");
+        if (!root || root.childElementCount) return;
+        root.innerHTML = `<div style="padding:32px;font-family:sans-serif;color:#8b1e1e">Frontend startup error: ${String(message)}</div>`;
+      }
+      window.addEventListener("error", (event) => showStartupError(event.message || event.error));
+      window.addEventListener("unhandledrejection", (event) => showStartupError(event.reason?.message || event.reason));
+    </script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
