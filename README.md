@@ -160,12 +160,13 @@ The fastest production setup is:
 
 1. Push this project to GitHub.
 2. Deploy the backend on Render with PostgreSQL.
-3. Deploy the frontend on Vercel.
-4. Put the Vercel frontend URL into the backend `CORS_ORIGINS`.
+3. Deploy the frontend on Netlify.
+4. Put the Netlify frontend URL into the backend `CORS_ORIGINS`.
 
 This repository includes:
 
 - `render.yaml` for the Render backend and PostgreSQL database.
+- `netlify.toml` for the Netlify frontend build and React Router fallback.
 - `frontend/vercel.json` for React Router refresh support on Vercel.
 - `frontend/.env.production.example` for the production API URL.
 
@@ -194,7 +195,7 @@ DATABASE_URL=<your Neon pooled connection string>
 SECRET_KEY=<a long random value>
 ACCESS_TOKEN_EXPIRE_MINUTES=10080
 MANAGER_REGISTRATION_CODE=<a private random value>
-CORS_ORIGINS=https://your-frontend-name.onrender.com
+CORS_ORIGINS=https://your-netlify-site.netlify.app
 VAPID_PUBLIC_KEY=<web-push-public-key>
 VAPID_PRIVATE_KEY=<web-push-private-key>
 VAPID_SUBJECT=mailto:admin@example.com
@@ -211,12 +212,30 @@ After the first blueprint deploy, open the backend service environment page and 
 
 ```env
 MANAGER_REGISTRATION_CODE=<a private random value>
-CORS_ORIGINS=https://your-frontend-url.vercel.app
+CORS_ORIGINS=https://your-netlify-site.netlify.app
 VAPID_PUBLIC_KEY=<optional web-push-public-key>
 VAPID_PRIVATE_KEY=<optional web-push-private-key>
 ```
 
-### 3. Deploy the Vite frontend on Vercel
+### 3. Deploy the Vite frontend on Netlify
+
+Import the same GitHub repository into Netlify with:
+
+| Setting | Value |
+| --- | --- |
+| Base directory | `frontend` |
+| Build command | `npm run build` |
+| Publish directory | `dist` |
+
+If Netlify reads `netlify.toml`, these settings are already defined. Add this build-time environment variable:
+
+```env
+VITE_API_URL=https://uftb-meals-api.onrender.com
+```
+
+After Netlify assigns the frontend URL, set backend `CORS_ORIGINS` to that exact Netlify URL and redeploy Render.
+
+### Optional: Deploy the Vite frontend on Vercel
 
 Import the same repository into Vercel with:
 
@@ -240,7 +259,7 @@ VITE_API_URL=https://uftb-meals-api.onrender.com
 Before sharing the website with students:
 
 1. Visit the backend health URL: `https://your-api.onrender.com/health`.
-2. Visit the frontend URL from Vercel.
+2. Visit the frontend URL from Netlify.
 3. Register the first manager using `MANAGER_REGISTRATION_CODE`.
 4. In the manager dashboard, set today's menu and registration rules.
 5. Ask members who want mobile reminders to sign in and tap **Enable alerts**.
